@@ -73,7 +73,7 @@ AliasesToExport = @()
 # DscResourcesToExport = @()
 
 # List of all modules packaged with this module
-ModuleList = @('ConvertFrom-StringTable.psm1')
+ModuleList = @()
 
 # List of all files packaged with this module
 FileList = @('ConvertFrom-StringTable.psm1')
