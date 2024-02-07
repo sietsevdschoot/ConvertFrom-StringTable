@@ -4,7 +4,7 @@
 RootModule = 'ConvertFrom-StringTable.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.0'
+ModuleVersion = '0.9.3'
 
 # Supported PSEditions
 CompatiblePSEditions = @('6.0.0')
@@ -58,10 +58,10 @@ PowerShellVersion = '6.0.0'
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = @()
+FunctionsToExport = @('ConvertFrom-StringTable')
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
-CmdletsToExport = @('ConvertFrom-StringTable')
+CmdletsToExport = @()
 
 # Variables to export from this module
 VariablesToExport = '*'
@@ -73,10 +73,10 @@ AliasesToExport = @()
 # DscResourcesToExport = @()
 
 # List of all modules packaged with this module
-ModuleList = @()
+ModuleList = @('ConvertFrom-StringTable')
 
 # List of all files packaged with this module
-FileList = @('ConvertFrom-StringTable.psm1')
+FileList = @('ConvertFrom-StringTable.psm1', 'ConvertFrom-StringTable.psd1')
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
