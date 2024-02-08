@@ -62,7 +62,7 @@ Names       : redis-server
 ### DoubleLineTableRenderer:
 
 ```powershell
-  $commandOutput = @"
+  $cmdOutput = @"
   ╔════╦═════════════════╦═══════════════════╦════════════════╗
   ║ No ║ Name            ║ Position          ║         Salary ║
   ╠════╬═════════════════╬═══════════════════╬════════════════╣
@@ -72,13 +72,13 @@ Names       : redis-server
   ║ 4  ║ Mark Zuckerberg ║ Founder Facebook  ║ $ 1,300,000.00 ║
   ╚════╩═════════════════╩═══════════════════╩════════════════╝
 "@
-  ($commandOutput -split "`n") | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
+  ($cmdOutput -split "`n") | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
 ```
 
 
 ### SQLite
 ```powershell
-  $commandOutput = @"
+  $cmdOutput = @"
   +----+-------+-------------------+
   | id | name  | email             |
   +----+-------+-------------------+
@@ -88,19 +88,19 @@ Names       : redis-server
 "@
 
   # $actual = mysql -e "SELECT * FROM users" | ConvertFrom-StringTable
-  $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+  $actual = ($cmdOutput -split "`n") | ConvertFrom-StringTable
 ```
 
 ### MinimalTableRenderer
 ```powershell
-  $commandOutput = @"
+  $cmdOutput = @"
 
   Product Quantity Price
   Laptop  2        € 1200
   Phone   5        € 500
 "@
 
-  $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+  $actual = ($cmdOutput -split "`n") | ConvertFrom-StringTable
 ```
 
 ## Known Issues
