@@ -37,7 +37,7 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
     John | 25  | New York
     Jane | 30  | Los Angeles
 "@
-    $table -split "`n" | ConvertFrom-StringTable
+    $table | ConvertFrom-StringTable
 
     This example converts the provided string table into PowerShell objects with properties 'Name', 'Age', and 'City'.
 
@@ -49,7 +49,7 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
     Laptop  2        $1200
     Phone   5        $500
 "@
-    $table -split "`n" | ConvertFrom-StringTable
+    $table | ConvertFrom-StringTable
 
     This example demonstrates the conversion of a string table with properties 'Product', 'Quantity', and 'Price'.
 
@@ -62,7 +62,7 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
     Laptop  ║ 2        ║ $1200
     Phone   ║ 5        ║ $500
 "@
-    $table -split "`n" | ConvertFrom-StringTable -TableSeparators "═║═ " -ColumnSeparators "║"
+    $table | ConvertFrom-StringTable -TableSeparators "═║═ " -ColumnSeparators "║"
 
     This example demonstrates the conversion of a string table with properties 'Product', 'Quantity', and 'Price'.
 
@@ -97,7 +97,7 @@ Function ConvertFrom-StringTable {
 
   PROCESS {
 
-    $lineEntries.Add($Line)
+    $Line -split "`n" | ForEach-Object { $lineEntries.Add($_) }
   }
 
   END { 

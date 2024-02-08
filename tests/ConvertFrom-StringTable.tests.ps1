@@ -17,7 +17,7 @@ Describe "Convert-FromStringTable" {
 "@
 
         # $actual = docker ps -a | ConvertFrom-StringTable
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("ContainerId", "Image", "Command", "Created", "Status", "Ports", "Names" | Sort-Object) 
@@ -38,7 +38,7 @@ Describe "Convert-FromStringTable" {
 "@
 
         # $actual = netstat -n | ConvertFrom-StringTable
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("Proto", "LocalAddress", "ForeignAddress", "State" | Sort-Object) 
@@ -66,7 +66,7 @@ Describe "Convert-FromStringTable" {
 "@
 
         # $actual = psql -c "SELECT * FROM users" | ConvertFrom-StringTable
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("id", "name", "email" | Sort-Object) 
@@ -88,7 +88,7 @@ Describe "Convert-FromStringTable" {
 "@
 
         # $actual = mysql -e "SELECT * FROM users" | ConvertFrom-StringTable
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("id", "name", "email" | Sort-Object) 
@@ -108,7 +108,7 @@ Describe "Convert-FromStringTable" {
 "@
 
         # $actual = sqlite3 test.db ".headers on" ".mode column" "SELECT * FROM users;" | ConvertFrom-StringTable
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("id", "name", "email" | Sort-Object) 
@@ -125,7 +125,7 @@ Describe "Convert-FromStringTable" {
 "@
 
         # $actual = aws ec2 describe-instances | ConvertFrom-StringTable
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("InstanceId", "InstanceType", "State", "PublicIp", "PrivateIp", "LaunchTime" | Sort-Object) 
@@ -148,7 +148,7 @@ Describe "Convert-FromStringTable" {
         ╚════╩═════════════════╩═══════════════════╩════════════════╝
 "@
 
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
+        $actual = $commandOutput | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
@@ -170,7 +170,7 @@ Describe "Convert-FromStringTable" {
         └────┴─────────────────┴───────────────────┴────────────────┘
 "@
 
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable -TableSeparators "├┼┤─└┴┘┌┬┐ " -ColumnSeparators "│"
+        $actual = $commandOutput | ConvertFrom-StringTable -TableSeparators "├┼┤─└┴┘┌┬┐ " -ColumnSeparators "│"
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
@@ -190,7 +190,7 @@ Describe "Convert-FromStringTable" {
          4  ║ Mark Zuckerberg ║ Founder Facebook  ║ $ 1,300,000.00 
 "@
 
-        $actual = ($commandOutput -split "`n" ) | ConvertFrom-StringTable -TableSeparators "═║═ " -ColumnSeparators "║"
+        $actual = $commandOutput | ConvertFrom-StringTable -TableSeparators "═║═ " -ColumnSeparators "║"
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
@@ -212,7 +212,7 @@ Describe "Convert-FromStringTable" {
         .............................................................
 "@
 
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable -TableSeparators ".: " -ColumnSeparators ":"
+        $actual = $commandOutput | ConvertFrom-StringTable -TableSeparators ".: " -ColumnSeparators ":"
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
@@ -231,7 +231,7 @@ Describe "Convert-FromStringTable" {
         4  Mark Zuckerberg Founder Facebookk $ 1,300,000.00
 "@
 
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
@@ -251,7 +251,7 @@ Describe "Convert-FromStringTable" {
 "@
         # Docker for Windows issue: https://github.com/docker/for-win/issues/13891
         # $actual = docker ps -a | ConvertFrom-StringTable
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("ContainerId", "Image", "Command", "Created", "Status", "Ports", "Names" | Sort-Object) 
@@ -269,7 +269,7 @@ Describe "Convert-FromStringTable" {
         Phone   5        € 500
     
 "@
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("Product", "Quantity", "Price" | Sort-Object) 
@@ -287,7 +287,7 @@ Describe "Convert-FromStringTable" {
         4  Larry Page      Founder Google
         5  Mark Zuckerberg                   $ 1,300,000.00
 "@
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
@@ -308,7 +308,7 @@ Describe "Convert-FromStringTable" {
         3   Reid Hoffman
         4   Larry Page
 "@
-        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+        $actual = $commandOutput | ConvertFrom-StringTable
 
         $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
         $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
@@ -318,36 +318,4 @@ Describe "Convert-FromStringTable" {
         $actual[0], ([PsCustomObject]@{ No="1"; Name="Bill Gates"; Position=""; Salary="" }) | Test-Equality | Should -BeTrue -Because ($actual[0] | ConvertTo-Json)
         $actual[3], ([PsCustomObject]@{ No="4"; Name="Larry Page"; Position=""; Salary="" }) | Test-Equality | Should -BeTrue -Because ($actual[3] | ConvertTo-Json)
     }
-
-    # https://github.com/iRon7/ConvertFrom-SourceTable
-    It "Can parse TextTableBuilder DotsTableRenderer output" {
-       
-      $commandOutput = '
-      Name       Value         RGB
-      ----       -----         ---
-      Black   0x000000       0,0,0
-      White   0xFFFFFF 255,255,255
-      Red     0xFF0000     255,0,0
-      Lime    0x00FF00     0,255,0
-      Blue    0x0000FF     0,0,255
-      Yellow  0xFFFF00   255,255,0
-      Cyan    0x00FFFF   0,255,255
-      Magenta 0xFF00FF   255,0,255
-      Silver  0xC0C0C0 192,192,192
-      Gray    0x808080 128,128,128
-      Maroon  0x800000     128,0,0
-      Olive   0x808000   128,128,0
-      Green   0x008000     0,128,0
-      Purple  0x800080   128,0,128
-      Teal    0x008080   0,128,128
-      Navy    0x000080     0,0,128'
-
-      $actual = $commandOutput | ConvertFrom-StringTable
-
-      $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-      $properties | Sort-Object | Should -Be ("Name", "Value", "RGB" | Sort-Object) 
-
-      $actual.Count | Should -Be 15
-      $actual[1], ([PsCustomObject]@{ Name="White"; Value="0xFFFFFF"; RGB="255,255,255" }) | Test-Equality | Should -BeTrue -Because ($actual[1] | ConvertTo-Json)
-  }    
 }

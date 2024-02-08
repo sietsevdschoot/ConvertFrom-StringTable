@@ -72,7 +72,7 @@ Names       : redis-server
   ║ 4  ║ Mark Zuckerberg ║ Founder Facebook  ║ $ 1,300,000.00 ║
   ╚════╩═════════════════╩═══════════════════╩════════════════╝
 "@
-  ($cmdOutput -split "`n") | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
+  $cmdOutput | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
 ```
 
 
@@ -88,7 +88,7 @@ Names       : redis-server
 "@
 
   # $actual = mysql -e "SELECT * FROM users" | ConvertFrom-StringTable
-  $actual = ($cmdOutput -split "`n") | ConvertFrom-StringTable
+  $actual = $cmdOutput | ConvertFrom-StringTable
 ```
 
 ### MinimalTableRenderer
@@ -100,7 +100,7 @@ Names       : redis-server
   Phone   5        € 500
 "@
 
-  $actual = ($cmdOutput -split "`n") | ConvertFrom-StringTable
+  $actual = $cmdOutput | ConvertFrom-StringTable
 ```
 
 ## Known Issues
