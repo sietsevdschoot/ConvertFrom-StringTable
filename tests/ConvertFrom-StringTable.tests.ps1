@@ -133,6 +133,7 @@ Describe "Convert-FromStringTable" {
         $actual.Count | Should -Be 2
     }
     
+    # https://github.com/RobThree/TextTableBuilder
     # https://www.nuget.org/packages/TextTableBuilder
     It "Can parse TextTableBuilder DoubleLineTableRenderer output" {
        
@@ -155,7 +156,7 @@ Describe "Convert-FromStringTable" {
         $actual.Count | Should -Be 4
     }
 
-    # https://www.nuget.org/packages/TextTableBuilder
+    # https://github.com/RobThree/TextTableBuilder
     It "Can parse TextTableBuilder MSDOSTableRenderer output" {
        
         $commandOutput = @"
@@ -175,7 +176,7 @@ Describe "Convert-FromStringTable" {
         $actual.Count | Should -Be 4
     }
 
-    # https://www.nuget.org/packages/TextTableBuilder
+    # https://github.com/RobThree/TextTableBuilder
     It "Can parse TextTableBuilder DotsTableRenderer output" {
        
         $commandOutput = @"
@@ -197,7 +198,7 @@ Describe "Convert-FromStringTable" {
         $actual.Count | Should -Be 4
     }
 
-    # https://www.nuget.org/packages/TextTableBuilder
+    # https://github.com/RobThree/TextTableBuilder
     It "Can parse TextTableBuilder MinimalTableRenderer output" {
        
         $commandOutput = @"
