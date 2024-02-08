@@ -1,4 +1,6 @@
-﻿using namespace System.Collections.Generic
+﻿#Requires -PSEdition Core -Version 7
+
+using namespace System.Collections.Generic
 using namespace System.Text.RegularExpressions
 
 # Fix diplaying special characters like '…' in 'docker ps -a' output
