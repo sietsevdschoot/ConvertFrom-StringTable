@@ -50,8 +50,10 @@ PostgreSQL Output
 $pgOutput = psql -c "SELECT * FROM users" | ConvertFrom-StringTable
 ```
 
+## Parsing formatted tables.
 
-Known Issues
+
+## Known Issues
 
 - For correct parsing, a table must contain at least one line (header or row) with all column values separated by two or more spaces.
 
@@ -66,30 +68,3 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ### Acknowledgments
 
 Special thanks to the maintainers of TextTableBuilder, which inspired the handling of different table renderers in this module.
-
-
-
-
-
-
-
-Docker:
-```
-
-    CONTAINER ID   IMAGE              COMMAND        CREATED         STATUS          PORTS     NAMES
-    a1b2c3d4e5f6   nginx:latest       "nginx -g.."   5 minutes ago   Up 5 minutes    80/tcp    webserver
-    b6c7d8e9f0a1   redis:latest       "redis-s..."   10 minutes ago  Up 10 minutes   6379/tcp  redis-server
-
-```
-
-
-
-
-
-
-
-## Known Issues
-
-- In order to be parsed correctly, a table needs to contain at least one line - header or row - which contains all column values, separated by two or more spaces.
-- 
-
