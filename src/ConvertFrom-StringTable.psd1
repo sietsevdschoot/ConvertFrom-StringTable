@@ -4,7 +4,7 @@
 RootModule = 'ConvertFrom-StringTable.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.5'
+ModuleVersion = '0.9.6'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core')
@@ -99,7 +99,11 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        # ReleaseNotes = ''
+        ReleaseNotes = '
+  0.9.6 - February 2024
+
+  * Added parsing single line.
+  '
 
         # Prerelease string of this module
         # Prerelease = ''
