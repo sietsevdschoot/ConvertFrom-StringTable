@@ -4,10 +4,10 @@
 RootModule = 'ConvertFrom-StringTable.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.3'
+ModuleVersion = '0.9.4'
 
 # Supported PSEditions
-CompatiblePSEditions = @('6.0.0')
+CompatiblePSEditions = @('Core')
 
 # ID used to uniquely identify this module
 GUID = '48630586-fffe-4363-8abe-56e0eb7e2389'
@@ -22,7 +22,7 @@ Copyright = '(c) 2023 Sietse van der Schoot. All rights reserved.'
 Description = 'Parse string tables into Powershell objects.'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '6.0.0'
+PowerShellVersion = '7.0.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
