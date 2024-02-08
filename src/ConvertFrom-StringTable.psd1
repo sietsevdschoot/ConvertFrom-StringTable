@@ -16,10 +16,12 @@ GUID = '48630586-fffe-4363-8abe-56e0eb7e2389'
 Author = 'Sietse van der Schoot'
 
 # Copyright statement for this module
-Copyright = '(c) 2023 Sietse van der Schoot. All rights reserved.'
+Copyright = 'Sietse van der Schoot. All rights reserved.'
 
 # Description of the functionality provided by this module
-Description = 'Parse string tables into Powershell objects.'
+# Description = 'Parse string tables into Powershell objects.'
+Description = 'A PowerShell module designed to effortlessly convert various types of string tables into objects.
+This module supports parsing of parsing table output from major applications like Docker, Kubernetes, MySQL, PostgreSQL, SQLite, AWS CLI, and more.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '7.0.0'

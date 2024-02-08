@@ -2,13 +2,13 @@
 
 A PowerShell module designed to effortlessly convert various types of string tables into objects.
 
-```ConvertFrom-StringTable``` simplifies the process of parsing table output from major applications like Docker, Kubernetes, MySQL, PostgreSQL, SQLite, AWS CLI, and more.
+`ConvertFrom-StringTable` simplifies the process of extracting structured data from command line outputs, enabling seamless integration with PowerShell scripts and automation pipelines.
 
-This module simplifies the process of extracting structured data from command line outputs, enabling seamless integration with PowerShell scripts and automation pipelines.
+This module supports parsing of parsing table output from major applications like Docker, Kubernetes, MySQL, PostgreSQL, SQLite, AWS CLI, and more.
 
 ## Installation
 
-You can install ConvertFrom-StringTable directly from the PowerShell Gallery using the following command:
+You can install `ConvertFrom-StringTable` directly from the PowerShell Gallery using the following command:
 ```powershell
 Install-Module -Name ConvertFrom-StringTable
 ```
@@ -18,7 +18,6 @@ Then import the module before use:
 ```powershell
 Import-Module ConvertFrom-StringTable
 ```
-
 
 ## Usage
 
@@ -56,25 +55,53 @@ Names       : redis-server
 
 ```
 
-### Real-World Examples
-
-Kubernetes Ouput
-```powershell
-kubectl get pods | ConvertFrom-Stringtable
-```
-
-AWS CLI Output
-```powershell
-aws ec2 describe-instances | ConvertFrom-StringTable
-```
-
-PostgreSQL Output
-```powershell
-psql -c "SELECT * FROM users" | ConvertFrom-StringTable
-```
-
 ## Parsing formatted tables.
 
+`ConvertFrom-StringTable` can parse table in various layouts.
+
+### DoubleLineTableRenderer:
+
+```powershell
+  $commandOutput = @"
+  ╔════╦═════════════════╦═══════════════════╦════════════════╗
+  ║ No ║ Name            ║ Position          ║         Salary ║
+  ╠════╬═════════════════╬═══════════════════╬════════════════╣
+  ║ 1  ║ Bill Gates      ║ Founder Microsoft ║    $ 10,000.00 ║
+  ║ 2  ║ Steve Jobs      ║ Founder Apple     ║ $ 1,200,000.00 ║
+  ║ 3  ║ Larry Page      ║ Founder Google    ║ $ 1,100,000.00 ║
+  ║ 4  ║ Mark Zuckerberg ║ Founder Facebook  ║ $ 1,300,000.00 ║
+  ╚════╩═════════════════╩═══════════════════╩════════════════╝
+"@
+  ($commandOutput -split "`n") | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
+```
+
+
+### SQLite
+```powershell
+  $commandOutput = @"
+  +----+-------+-------------------+
+  | id | name  | email             |
+  +----+-------+-------------------+
+  | 1  | John  | john@example.com  |
+  | 2  | Jane  | jane@example.com  |
+  +----+-------+-------------------+
+"@
+
+  # $actual = mysql -e "SELECT * FROM users" | ConvertFrom-StringTable
+  $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+```
+
+### MinimalTableRenderer
+```powershell
+  $commandOutput = @"
+
+  Product Quantity Price
+  Laptop  2        € 1200
+  Phone   5        € 500
+"@
+
+  $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable
+```
 
 ## Known Issues
 
@@ -86,8 +113,13 @@ Contributions are welcome! If you encounter any issues or have suggestions for i
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://raw.githubusercontent.com/sietsevdschoot/ConvertFrom-StringTable/main/LICENSE) file for details.
 
 ## Acknowledgments
 
-Special thanks to the maintainers of TextTableBuilder, which inspired the handling of different table renderers in this module.
+Special thanks to:  
+https://github.com/RobThree/TextTableBuilder
+
+This project inspired several testcases and challenges on how to parse tables in rendered with different layouts.
+
+The source for the testcases for these renderers, and examples used in this documentation can be found in the [documentation](https://github.com/RobThree/TextTableBuilder?ab=readme-ov-file#examples) of `TextTableBuilder`.
