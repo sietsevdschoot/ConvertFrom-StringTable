@@ -57,7 +57,7 @@ Names       : redis-server
 
 ## Parsing formatted tables.
 
-`ConvertFrom-StringTable` can parse table in various layouts.
+`ConvertFrom-StringTable` can parse tables in various layouts using the `-TableSeperators` and `-ColumnSeparators` parameters:
 
 ### DoubleLineTableRenderer:
 
@@ -107,14 +107,6 @@ Names       : redis-server
 
 - For correct parsing, a table must contain at least one line (header or row) with all column values separated by two or more spaces.
 
-## Contributing
-
-Contributions are welcome! If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request on GitHub.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](https://raw.githubusercontent.com/sietsevdschoot/ConvertFrom-StringTable/main/LICENSE) file for details.
-
 ## Acknowledgments
 
 Special thanks to:  
@@ -123,3 +115,11 @@ https://github.com/RobThree/TextTableBuilder
 This project inspired several testcases and challenges on how to parse tables in rendered with different layouts.
 
 The source for the testcases for these renderers, and examples used in this documentation can be found in the [documentation](https://github.com/RobThree/TextTableBuilder?ab=readme-ov-file#examples) of `TextTableBuilder`.
+
+## Contributing
+
+Contributions are welcome! If you encounter any issues or have suggestions for improvements, please feel free to open an issue or submit a pull request on GitHub.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](https://raw.githubusercontent.com/sietsevdschoot/ConvertFrom-StringTable/main/LICENSE) file for details.
