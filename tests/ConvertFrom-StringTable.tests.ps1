@@ -157,6 +157,28 @@ Describe "Convert-FromStringTable" {
     }
 
     # https://github.com/RobThree/TextTableBuilder
+    It "Can parse TextTableBuilder SingleLineTableRenderer output" {
+       
+        $commandOutput = @"
+        ┌────┬─────────────────┬───────────────────┬────────────────┐
+        │ No │ Name            │ Position          │         Salary │
+        ├────┼─────────────────┼───────────────────┼────────────────┤
+        │ 1  │ Bill Gates      │ Founder Microsoft │    $ 10,000.00 │
+        │ 2  │ Steve Jobs      │ Founder Apple     │ $ 1,200,000.00 │
+        │ 3  │ Larry Page      │ Founder Google    │ $ 1,100,000.00 │
+        │ 4  │ Mark Zuckerberg │ Founder Facebook  │ $ 1,300,000.00 │
+        └────┴─────────────────┴───────────────────┴────────────────┘
+"@
+
+        $actual = ($commandOutput -split "`n") | ConvertFrom-StringTable -TableSeparators "├┼┤─└┴┘┌┬┐ " -ColumnSeparators "│"
+
+        $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
+        $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+
+        $actual.Count | Should -Be 4
+    }
+
+    # https://github.com/RobThree/TextTableBuilder
     It "Can parse TextTableBuilder MSDOSTableRenderer output" {
        
         $commandOutput = @"
