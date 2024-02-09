@@ -30,38 +30,38 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
 
 .EXAMPLE
 
-    $table = @"
+    $table = '
 
     Name | Age | City
     ------------------------
     John | 25  | New York
     Jane | 30  | Los Angeles
-"@
+    '
+
     $table | ConvertFrom-StringTable
 
     This example converts the provided string table into PowerShell objects with properties 'Name', 'Age', and 'City'.
 
 .EXAMPLE
 
-    $table = @"
-
+    '
     Product Quantity Price
     Laptop  2        $1200
     Phone   5        $500
-"@
-    $table | ConvertFrom-StringTable
+    
+    ' | ConvertFrom-StringTable
 
     This example demonstrates the conversion of a string table with properties 'Product', 'Quantity', and 'Price'.
 
 .EXAMPLE
 
-    $table = @"
+    $table = '
 
     Product ║ Quantity ║ Price
     ════════║══════════║══════
     Laptop  ║ 2        ║ $1200
     Phone   ║ 5        ║ $500
-"@
+    '
     $table | ConvertFrom-StringTable -TableSeparators "═║═ " -ColumnSeparators "║"
 
     This example demonstrates the conversion of a string table with properties 'Product', 'Quantity', and 'Price'.
