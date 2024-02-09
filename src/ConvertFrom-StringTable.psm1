@@ -45,11 +45,13 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
 .EXAMPLE
 
     $table = '
+
       Product Quantity Price
       Laptop  2        $1200
       Phone   5        $500
+    ' 
     
-    ' | ConvertFrom-StringTable
+    $table = | ConvertFrom-StringTable
 
     This example demonstrates the conversion of a string table with properties 'Product', 'Quantity', and 'Price'.
 
