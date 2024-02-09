@@ -3,7 +3,7 @@
 using namespace System.Collections.Generic
 using namespace System.Text.RegularExpressions
 
-# Fix diplaying special characters like '…' in 'docker ps -a' output
+# Fix diplaying special characters, for example '…' in 'docker ps -a' output
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 $columnFinderRegex = [Regex]::New("\S+(?:\s?\S+)*", [RegexOptions]::Compiled -bor [RegexOptions]::CultureInvariant)
@@ -32,10 +32,10 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
 
     $table = '
 
-    Name | Age | City
-    ------------------------
-    John | 25  | New York
-    Jane | 30  | Los Angeles
+      Name | Age | City
+      ------------------------
+      John | 25  | New York
+      Jane | 30  | Los Angeles
     '
 
     $table | ConvertFrom-StringTable
@@ -44,10 +44,10 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
 
 .EXAMPLE
 
-    '
-    Product Quantity Price
-    Laptop  2        $1200
-    Phone   5        $500
+    $table = '
+      Product Quantity Price
+      Laptop  2        $1200
+      Phone   5        $500
     
     ' | ConvertFrom-StringTable
 
@@ -57,10 +57,10 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
 
     $table = '
 
-    Product ║ Quantity ║ Price
-    ════════║══════════║══════
-    Laptop  ║ 2        ║ $1200
-    Phone   ║ 5        ║ $500
+      Product ║ Quantity ║ Price
+      ════════║══════════║══════
+      Laptop  ║ 2        ║ $1200
+      Phone   ║ 5        ║ $500
     '
     $table | ConvertFrom-StringTable -TableSeparators "═║═ " -ColumnSeparators "║"
 
