@@ -123,8 +123,8 @@ Function Get-LineEntry {
   param(
     [Parameter(ValueFromPipeline)]
     [string] $Line,
-    [string] $TableSeparators = "-+| ",
-    [string] $ColumnSeparators = "|"
+    [string] $TableSeparators,
+    [string] $ColumnSeparators
   )
 
   BEGIN {
