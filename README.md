@@ -41,7 +41,7 @@ ContainerId : a1b2c3d4e5f6
 Image       : nginx:latest
 Command     : "nginx -g.."
 Created     : 5 minutes ago
-Status      : Up 5 minutes
+Status      : Up 5 minut\es
 Ports       : 80/tcp
 Names       : webserver
 
@@ -52,7 +52,11 @@ Created     : 10 minutes ago
 Status      : Up 10 minutes
 Ports       : 6379/tcp
 Names       : redis-server
+```
 
+These objects can then be queried / manipulated further using the Powershell pipeline.
+```powershell
+$container = docker ps -a | ConvertFrom-StringTable | ?{ $_.Names -eq "webserver" }
 ```
 
 ## Parsing formatted tables.
@@ -62,7 +66,7 @@ Names       : redis-server
 ### DoubleLineTableRenderer:
 
 ```powershell
-  $cmdOutput = @"
+$cmdOutput = ' 
   ╔════╦═════════════════╦═══════════════════╦════════════════╗
   ║ No ║ Name            ║ Position          ║         Salary ║
   ╠════╬═════════════════╬═══════════════════╬════════════════╣
@@ -71,36 +75,35 @@ Names       : redis-server
   ║ 3  ║ Larry Page      ║ Founder Google    ║ $ 1,100,000.00 ║
   ║ 4  ║ Mark Zuckerberg ║ Founder Facebook  ║ $ 1,300,000.00 ║
   ╚════╩═════════════════╩═══════════════════╩════════════════╝
-"@
-  $cmdOutput | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
+'
+$cmdOutput | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
 ```
-
 
 ### SQLite
 ```powershell
-  $cmdOutput = @"
+$cmdOutput = '
   +----+-------+-------------------+
   | id | name  | email             |
   +----+-------+-------------------+
   | 1  | John  | john@example.com  |
   | 2  | Jane  | jane@example.com  |
   +----+-------+-------------------+
-"@
+'
 
-  # $actual = mysql -e "SELECT * FROM users" | ConvertFrom-StringTable
-  $actual = $cmdOutput | ConvertFrom-StringTable
+# $actual = mysql -e "SELECT * FROM users" | ConvertFrom-StringTable
+$actual = $cmdOutput | ConvertFrom-StringTable
 ```
 
 ### MinimalTableRenderer
 ```powershell
-  $cmdOutput = @"
+$cmdOutput = '
 
   Product Quantity Price
   Laptop  2        € 1200
   Phone   5        € 500
-"@
+'
 
-  $actual = $cmdOutput | ConvertFrom-StringTable
+$actual = $cmdOutput | ConvertFrom-StringTable
 ```
 
 ## Known Issues
@@ -114,7 +117,7 @@ https://github.com/RobThree/TextTableBuilder
 
 This project inspired several testcases and challenges on how to parse tables in rendered with different layouts.
 
-The source for the testcases for these renderers, and examples used in this documentation can be found in the [documentation](https://github.com/RobThree/TextTableBuilder?ab=readme-ov-file#examples) of `TextTableBuilder`.
+The source for the testcases for these renderers, and examples used in this documentation can be found in the [documentation](https://github.com/RobThree/TextTableBuilder?ab=readme-ov-file#examples) of TextTableBuilder.
 
 ## Contributing
 
