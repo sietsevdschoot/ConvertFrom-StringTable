@@ -342,6 +342,15 @@ Describe "Convert-FromStringTable" {
     $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = ""; Salary = "" })
     $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = ""; Salary = "" })
   }
+
+  It "Can parse output without headers" {
+
+    $cmdOutput = 1..5 | ForEach-Object { ($("a".."f" -join ""), $("A".."F" -join ""), $(0..5 -join "")) -join "  "  }  
+
+    $actual = $cmdOutput | ConvertFrom-StringTable -NoHeader
+
+    $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ Property01 = "abcdef"; Property02 = "ABCDEF"; Property03 = "012345"; })
+  }
 }
 
 Function BeEquivalentTo {
