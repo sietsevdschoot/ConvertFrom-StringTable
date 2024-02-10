@@ -260,7 +260,7 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 4
 
-    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Mark Zuckerberg"; Position = "Founder Facebookk"; Salary = "$ 1,300,000.00" })
+    $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Mark Zuckerberg"; Position = "Founder Facebookk"; Salary = "$ 1,300,000.00" })
   }
 
   It "Can convert docker container output with powershell error" {
@@ -318,9 +318,9 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 5
 
-    $actual[1] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "2"; Name = "Steve Jobs"; Position = "Founder Apple"; Salary = "$ 1,200,000.00" })
-    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = "Founder Google"; Salary = "" })
-    $actual[4] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "5"; Name = "Mark Zuckerberg"; Position = ""; Salary = "$ 1,300,000.00" })
+    $actual[1] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "2"; Name = "Steve Jobs"; Position = "Founder Apple"; Salary = "$ 1,200,000.00" })
+    $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = "Founder Google"; Salary = "" })
+    $actual[4] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "5"; Name = "Mark Zuckerberg"; Position = ""; Salary = "$ 1,300,000.00" })
   }
 
   It "Can parse output with lots of missing data" {
@@ -339,26 +339,31 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 4
 
-    $actual[0] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = ""; Salary = "" })
-    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = ""; Salary = "" })
+    $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = ""; Salary = "" })
+    $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = ""; Salary = "" })
   }
 }
 
 Function BeEquivalentTo {
   param (
     [PSCustomObject] $ActualValue,
+    [Parameter(ValueFromRemainingArguments)]
     [PsCustomObject] $Expected,
+    [PsCustomObject] $CallerSessionState,
     [Switch] $Negate
   )
 
-  $result = [PsCustomObject]@{ 
-    Succeeded = (-not $Negate) -eq ($ActualValue, $Expected | Test-Equality); 
-    FailureMessage = $Negate `
+  $success = (-not $Negate) -eq ($ActualValue, $Expected | Test-Equality)
+
+  if (!$success) {
+
+    $failureMessage = $Negate `
       ? "Expected object not to be equivalent to:`n$(($Expected | ConvertTo-Json))" `
-      : "Expected:`n$(($Expected | ConvertTo-Json))`nBut found: `n$(($ActualValue | ConvertTo-Json))" 
+      : "Expected:`n$(($Expected | ConvertTo-Json))`nBut found: `n$(($ActualValue | ConvertTo-Json))"
+
   }
 
-  $result
+  [PsCustomObject]@{ Succeeded = $success; FailureMessage = $failureMessage }
 }
 
 Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo
