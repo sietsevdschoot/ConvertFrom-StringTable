@@ -76,6 +76,28 @@ Describe "Convert-FromStringTable" {
     $actual.Count | Should -Be 2
   } 
 
+  It "Can parse WinGet output" {
+
+    $cmdOutput = '
+    Name                                               Id                                         Version              Match       Source
+    --------------------------------------------------------------------------------------------------------------------------------------
+    Waf DotNetPad                                      9PB8D09261JR                               Unknown                          msstore
+    IronPython 2                                       Microsoft.IronPython.2                     2.7.12.1000          Tag: dotnet winget
+    Microsoft .NET SDK 8.0 Preview                     Microsoft.DotNet.SDK.Preview               8.0.100-rc.2.23502.2 Tag: dotnet winget
+    Microsoft ASP.NET Core Hosting Bundle 8.0 Preview  Microsoft.DotNet.HostingBundle.Preview     8.0.0-rc.2.23480.2   Tag: dotnet winget
+    Microsoft .NET Windows Desktop Runtime 6.0         Microsoft.DotNet.DesktopRuntime.6          6.0.26               Tag: dotnet winget
+    Microsoft .NET Windows Desktop Runtime 5.0         Microsoft.DotNet.DesktopRuntime.5          5.0.17               Tag: dotnet winget    
+    '
+
+    # $actual = winget search dotnet | ConvertFrom-StringTable
+    $actual = $cmdOutput | ConvertFrom-StringTable
+
+    $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
+    $properties | Sort-Object | Should -Be ("Name", "Id", "Version", "Match", "Source" | Sort-Object) 
+
+    $actual.Count | Should -Be 6
+  } 
+
   It "Can parse MySQL output" {
 
     $cmdOutput = '
@@ -238,7 +260,7 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 4
 
-    $actual[3], ([PsCustomObject]@{ No = "4"; Name = "Mark Zuckerberg"; Position = "Founder Facebookk"; Salary = "$ 1,300,000.00" }) | Test-Equality | Should -BeTrue -Because ($actual[3] | ConvertTo-Json)
+    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Mark Zuckerberg"; Position = "Founder Facebookk"; Salary = "$ 1,300,000.00" })
   }
 
   It "Can convert docker container output with powershell error" {
@@ -296,9 +318,9 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 5
 
-    $actual[1], ([PsCustomObject]@{ No = "2"; Name = "Steve Jobs"; Position = "Founder Apple"; Salary = "$ 1,200,000.00" }) | Test-Equality | Should -BeTrue -Because ($actual[1] | ConvertTo-Json)
-    $actual[3], ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = "Founder Google"; Salary = "" }) | Test-Equality | Should -BeTrue -Because ($actual[3] | ConvertTo-Json)
-    $actual[4], ([PsCustomObject]@{ No = "5"; Name = "Mark Zuckerberg"; Position = ""; Salary = "$ 1,300,000.00" }) | Test-Equality | Should -BeTrue -Because ($actual[4] | ConvertTo-Json)
+    $actual[1] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "2"; Name = "Steve Jobs"; Position = "Founder Apple"; Salary = "$ 1,200,000.00" })
+    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = "Founder Google"; Salary = "" })
+    $actual[4] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "5"; Name = "Mark Zuckerberg"; Position = ""; Salary = "$ 1,300,000.00" })
   }
 
   It "Can parse output with lots of missing data" {
@@ -317,7 +339,26 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 4
 
-    $actual[0], ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = ""; Salary = "" }) | Test-Equality | Should -BeTrue -Because ($actual[0] | ConvertTo-Json)
-    $actual[3], ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = ""; Salary = "" }) | Test-Equality | Should -BeTrue -Because ($actual[3] | ConvertTo-Json)
+    $actual[0] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = ""; Salary = "" })
+    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = ""; Salary = "" })
   }
 }
+
+Function BeEquivalentTo {
+  param (
+    [PSCustomObject] $ActualValue,
+    [PsCustomObject] $Expected,
+    [Switch] $Negate
+  )
+
+  $result = [PsCustomObject]@{ 
+    Succeeded = (-not $Negate) -eq ($ActualValue, $Expected | Test-Equality); 
+    FailureMessage = $Negate `
+      ? "Expected object not to be equivalent to:`n$(($Expected | ConvertTo-Json))" `
+      : "Expected:`n$(($Expected | ConvertTo-Json))`nBut found: `n$(($ActualValue | ConvertTo-Json))" 
+  }
+
+  $result
+}
+
+Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo
