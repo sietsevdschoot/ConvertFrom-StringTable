@@ -1,10 +1,25 @@
 # ConvertFrom-StringTable
 
-A PowerShell module designed to effortlessly convert various types of string tables into objects.
+A PowerShell cmdlet designed to effortlessly convert text tables into objects
 
 `ConvertFrom-StringTable` simplifies the process of extracting structured data from command line outputs, enabling seamless integration with PowerShell scripts and automation pipelines.
 
-This module supports parsing of parsing table output from major applications like Docker, Kubernetes, MySQL, PostgreSQL, SQLite, AWS CLI, and more.
+## Features:
+
+- Converts text based tables into powershell objects
+- Columns can be left- right or centered aligned
+- Can parse any table layout using the `-TableSeparators` and `-ColumnSeparators` parameters
+- Headers can be optionally omitted.
+
+This module supports parsing table output from major applications, such as : 
+- Docker
+- Kubernetes 
+- Winget
+- MySQL
+- PostgreSQL
+- SQLite
+- AWS CLI
+- Plus many more...
 
 ## Installation
 
@@ -24,9 +39,8 @@ Import-Module ConvertFrom-StringTable
 To convert a simple string table into PowerShell objects, you can use the following syntax:
 
 ```powershell
-<Your command> | ConvertFrom-StringTable [-ColumnSeperators] <string> [-RowSeperators] <string> 
+<Your command> | ConvertFrom-StringTable [-ColumnSeperators] <string> [-RowSeperators] <string> [-NoHeader]
 ```
-
 
 ```
 docker ps -a
@@ -62,6 +76,22 @@ $container = docker ps -a | ConvertFrom-StringTable | ?{ $_.Names -eq "webserver
 ## Parsing formatted tables.
 
 `ConvertFrom-StringTable` can parse tables in various layouts using the `-TableSeperators` and `-ColumnSeparators` parameters:
+
+### Winget
+
+```powershell
+$cmdOutput = '
+Name                                               Id                                         Version              Match       Source
+--------------------------------------------------------------------------------------------------------------------------------------
+Waf DotNetPad                                      9PB8D09261JR                               Unknown                          msstore
+IronPython 2                                       Microsoft.IronPython.2                     2.7.12.1000          Tag: dotnet winget
+Microsoft .NET SDK 8.0 Preview                     Microsoft.DotNet.SDK.Preview               8.0.100-rc.2.23502.2 Tag: dotnet winget
+Microsoft ASP.NET Core Hosting Bundle 8.0 Preview  Microsoft.DotNet.HostingBundle.Preview     8.0.0-rc.2.23480.2   Tag: dotnet winget
+Microsoft .NET Windows Desktop Runtime 6.0         Microsoft.DotNet.DesktopRuntime.6          6.0.26               Tag: dotnet winget
+Microsoft .NET Windows Desktop Runtime 5.0         Microsoft.DotNet.DesktopRuntime.5          5.0.17               Tag: dotnet winget    
+'
+$cmdOutput | ConvertFrom-StringTable
+```
 
 ### DoubleLineTableRenderer:
 
@@ -118,6 +148,8 @@ https://github.com/RobThree/TextTableBuilder
 This project inspired several testcases and challenges on how to parse tables in rendered with different layouts.
 
 The source for the testcases for these renderers, and examples used in this documentation can be found in the [documentation](https://github.com/RobThree/TextTableBuilder?ab=readme-ov-file#examples) of TextTableBuilder.
+
+[Functional](https://www.powershellgallery.com/packages/functional/0.0.4) is used in Pester extensions for object comparisons.
 
 ## Contributing
 
