@@ -1,10 +1,14 @@
-﻿#requires -Modules Pester, Functional 
+﻿#requires -Modules Pester
 
 Describe "Convert-FromStringTable" {
 
   BeforeAll {
 
+    Import-Module $PSScriptRoot\PesterExtensions.psm1 -Force
     Import-Module $PSScriptRoot\..\src\ConvertFrom-StringTable.psm1 -Force
+
+    Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo
+    Add-ShouldOperator -Name ContainEquivalentOf -Test $function:ContainEquivalentOf -SupportsArrayInput
   }
     
   It "Can convert simple string table" {
@@ -94,6 +98,14 @@ Describe "Convert-FromStringTable" {
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
     $properties | Sort-Object | Should -Be ("Name", "Id", "Version", "Match", "Source" | Sort-Object) 
+
+    $actual | Should -ContainEquivalentOf ([PsCustomObject]@{ 
+      Name = "Microsoft ASP.NET Core Hosting Bundle 8.0 Preview"; 
+      Id = "Microsoft.DotNet.HostingBundle.Preview"; 
+      Version = "8.0.0-rc.2.23480.2"; 
+      Match = "Tag: dotnet"; 
+      Source = "winget"; 
+    })
 
     $actual.Count | Should -Be 6
   } 
@@ -345,34 +357,10 @@ Describe "Convert-FromStringTable" {
 
   It "Can parse output without headers" {
 
-    $cmdOutput = 1..5 | ForEach-Object { ($("a".."f" -join ""), $("A".."F" -join ""), $(0..5 -join "")) -join "  "  }  
+    $cmdOutput = 1..5 | ForEach-Object { ($("a".."f" -join ""), $("A".."F" -join ""), $(0..5 -join "")) -join "  " }  
 
     $actual = $cmdOutput | ConvertFrom-StringTable -NoHeader
 
     $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ Property01 = "abcdef"; Property02 = "ABCDEF"; Property03 = "012345"; })
   }
 }
-
-Function BeEquivalentTo {
-  param (
-    [PSCustomObject] $ActualValue,
-    [Parameter(ValueFromRemainingArguments)]
-    [PsCustomObject] $Expected,
-    [PsCustomObject] $CallerSessionState,
-    [Switch] $Negate
-  )
-
-  $success = (-not $Negate) -eq ($ActualValue, $Expected | Test-Equality)
-
-  if (!$success) {
-
-    $failureMessage = $Negate `
-      ? "Expected object not to be equivalent to:`n$(($Expected | ConvertTo-Json))" `
-      : "Expected:`n$(($Expected | ConvertTo-Json))`nBut found: `n$(($ActualValue | ConvertTo-Json))"
-
-  }
-
-  [PsCustomObject]@{ Succeeded = $success; FailureMessage = $failureMessage }
-}
-
-Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo

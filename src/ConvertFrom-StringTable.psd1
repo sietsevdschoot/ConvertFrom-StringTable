@@ -18,9 +18,9 @@ Author = 'Sietse van der Schoot'
 # Copyright statement for this module
 Copyright = 'Sietse van der Schoot. All rights reserved.'
 
-Description = 'A PowerShell module designed to effortlessly convert various types of text tables into objects.
+Description = 'A PowerShell module designed to effortlessly convert text tables into objects.
 
-This module supports parsing text table output from major applications like Docker, Kubernetes, WinGet, MySQL, PostgreSQL, SQLite, AWS CLI, and more.'
+This module supports parsing text table output from all major applications like Docker, Kubernetes, WinGet, MySQL, PostgreSQL, SQLite, AWS CLI, and more.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '7.0.0'
