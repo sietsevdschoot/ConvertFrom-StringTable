@@ -1,6 +1,6 @@
 # ConvertFrom-StringTable
 
-A PowerShell cmdlet designed to effortlessly convert text tables into objects
+A PowerShell cmdlet designed to effortlessly convert text tables into objects.
 
 `ConvertFrom-StringTable` simplifies the process of extracting structured data from command line outputs, enabling seamless integration with PowerShell scripts and automation pipelines.
 
@@ -90,10 +90,12 @@ Microsoft ASP.NET Core Hosting Bundle 8.0 Preview  Microsoft.DotNet.HostingBundl
 Microsoft .NET Windows Desktop Runtime 6.0         Microsoft.DotNet.DesktopRuntime.6          6.0.26               Tag: dotnet winget
 Microsoft .NET Windows Desktop Runtime 5.0         Microsoft.DotNet.DesktopRuntime.5          5.0.17               Tag: dotnet winget    
 '
+
+# winget search dotnet | ConvertFrom-StringTable
 $cmdOutput | ConvertFrom-StringTable
 ```
 
-### DoubleLineTableRenderer:
+### DoubleLineTableRenderer
 
 ```powershell
 $cmdOutput = ' 
@@ -106,6 +108,7 @@ $cmdOutput = '
   ║ 4  ║ Mark Zuckerberg ║ Founder Facebook  ║ $ 1,300,000.00 ║
   ╚════╩═════════════════╩═══════════════════╩════════════════╝
 '
+
 $cmdOutput | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
 ```
 
