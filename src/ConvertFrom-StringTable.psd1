@@ -4,7 +4,7 @@
 RootModule = 'ConvertFrom-StringTable.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.9.6'
+ModuleVersion = '0.9.7'
 
 # Supported PSEditions
 CompatiblePSEditions = @('Core')
@@ -18,11 +18,9 @@ Author = 'Sietse van der Schoot'
 # Copyright statement for this module
 Copyright = 'Sietse van der Schoot. All rights reserved.'
 
-# Description of the functionality provided by this module
-# Description = 'Parse string tables into Powershell objects.'
-Description = 'A PowerShell module designed to effortlessly convert various types of string tables into objects.
+Description = 'A PowerShell module designed to effortlessly convert text tables into objects.
 
-This module supports parsing of parsing table output from major applications like Docker, Kubernetes, MySQL, PostgreSQL, SQLite, AWS CLI, and more.'
+This module supports parsing text table output from all major applications like Docker, Kubernetes, WinGet, MySQL, PostgreSQL, SQLite, AWS CLI, and more.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '7.0.0'
@@ -100,11 +98,15 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = '
-  0.9.6 - February 2024
+  0.9.6 - 6 February 2024
 
   * Added parsing single line.
-  '
+  
+  0.9.7 - 10 February 2024
 
+  * Added -NoHeader switch.
+
+  '
         # Prerelease string of this module
         # Prerelease = ''
 

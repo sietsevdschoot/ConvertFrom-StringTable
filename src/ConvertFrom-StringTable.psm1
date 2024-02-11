@@ -28,6 +28,9 @@ $wordFinderRegex = [Regex]::New("[^\s]+", [RegexOptions]::Compiled -bor [RegexOp
 .PARAMETER ColumnSeparators
     Specifies the characters used to separate the values within each column in the string table. The default value is "|".
 
+.PARAMETER NoHeader
+    Switch indicating the table has no headers. Headers will be auto-generated.
+
 .EXAMPLE
 
     $table = '
@@ -89,30 +92,27 @@ Function ConvertFrom-StringTable {
     [parameter(ValueFromPipeline)]
     [string] $Line,
     [string] $TableSeparators = "-+| ",
-    [string] $ColumnSeparators = "|"
+    [string] $ColumnSeparators = "|",
+    [switch] $NoHeader
   )
 
   BEGIN {
 
-    $lineEntries = [List[string]]::new()
+    $lines = [List[string]]::new()
   }
 
   PROCESS {
 
-    $Line -split "`n" | ForEach-Object { $lineEntries.Add($_) }
+    $Line -split "`n" | ForEach-Object { $lines.Add($_) }
   }
 
   END { 
 
-    $headerAndRowLines = $lineEntries 
-    | Get-LineEntry -TableSeparators $TableSeparators -ColumnSeparators $ColumnSeparators 
-    | Search-HeaderAndRowsData
+    $tableData = $lines
+    | Get-LineEntry -TableSeparators $TableSeparators -ColumnSeparators $ColumnSeparators
+    | Search-HeaderAndRowsData -NoHeader:$NoHeader
     
-    $headers = $headerAndRowLines 
-    | Select-Object -First 1 -exp Columns 
-    | ForEach-Object { (Get-Culture).TextInfo.ToTitleCase(($_.Trim().ToLower())) -replace "[^a-zA-Z0-9]" }
-
-    $entities = $headerAndRowLines | Select-Object -Skip 1 | Build-Entity -Headers $headers
+    $entities = $tableData.Rows | Build-Entity -Headers $tableData.Headers
 
     $entities
   }
@@ -157,7 +157,8 @@ Function Search-HeaderAndRowsData {
   [CmdletBinding()]
   param(
     [Parameter(ValueFromPipeline)]
-    [PsCustomObject] $LineEntry
+    [PsCustomObject] $LineEntry,
+    [switch] $NoHeader
   )
 
   BEGIN {
@@ -188,14 +189,29 @@ Function Search-HeaderAndRowsData {
 
       $rowEntries = @($rowEntries) + @($fixedRowEntries) | Sort-Object -prop LineIndex
     }
-    # Header is the first rowEntry which has detectedColumnCount
-    $headerIndex = $rowEntries 
+
+    $firstRowIndex = $rowEntries 
     | Where-Object { ($_.Columns | Where-Object{ $_ }).Count -eq $detectedColumnCount } 
     | Select-Object -First 1 -exp LineIndex
 
-    $rowEntries = $rowEntries | Where-Object { $_.LineIndex -ge $headerIndex } 
+    $rowEntries = $rowEntries
+    | Where-Object { $_.LineIndex -ge $firstRowIndex }
 
-    $rowEntries
+    if ($NoHeader.IsPresent) {
+
+      $headers = 1..$detectedColumnCount | ForEach-Object { "Property{0:d2}" -f $_ }
+    }
+    else {
+
+      $headers = $rowEntries 
+      | Select-Object -First 1 -exp Columns 
+      | ForEach-Object { (Get-Culture).TextInfo.ToTitleCase(($_.Trim().ToLower())) -replace "[^a-zA-Z0-9]" }
+    }
+    
+    [PsCustomObject]@{
+      Headers = $headers;
+      Rows = $rowEntries | Select-Object -Skip ($NoHeader.IsPresent ? 0 : 1);
+    }
   }
 }
 

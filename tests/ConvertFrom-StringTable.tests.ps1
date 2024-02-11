@@ -1,10 +1,14 @@
-﻿#requires -Modules Pester, Functional 
+﻿#requires -Modules Pester
 
 Describe "Convert-FromStringTable" {
 
   BeforeAll {
 
+    Import-Module $PSScriptRoot\PesterExtensions.psm1 -Force
     Import-Module $PSScriptRoot\..\src\ConvertFrom-StringTable.psm1 -Force
+
+    Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo
+    Add-ShouldOperator -Name ContainEquivalentOf -Test $function:ContainEquivalentOf -SupportsArrayInput
   }
     
   It "Can convert simple string table" {
@@ -94,6 +98,14 @@ Describe "Convert-FromStringTable" {
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
     $properties | Sort-Object | Should -Be ("Name", "Id", "Version", "Match", "Source" | Sort-Object) 
+
+    $actual | Should -ContainEquivalentOf ([PsCustomObject]@{ 
+      Name = "Microsoft ASP.NET Core Hosting Bundle 8.0 Preview"; 
+      Id = "Microsoft.DotNet.HostingBundle.Preview"; 
+      Version = "8.0.0-rc.2.23480.2"; 
+      Match = "Tag: dotnet"; 
+      Source = "winget"; 
+    })
 
     $actual.Count | Should -Be 6
   } 
@@ -260,7 +272,7 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 4
 
-    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Mark Zuckerberg"; Position = "Founder Facebookk"; Salary = "$ 1,300,000.00" })
+    $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Mark Zuckerberg"; Position = "Founder Facebookk"; Salary = "$ 1,300,000.00" })
   }
 
   It "Can convert docker container output with powershell error" {
@@ -318,9 +330,9 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 5
 
-    $actual[1] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "2"; Name = "Steve Jobs"; Position = "Founder Apple"; Salary = "$ 1,200,000.00" })
-    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = "Founder Google"; Salary = "" })
-    $actual[4] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "5"; Name = "Mark Zuckerberg"; Position = ""; Salary = "$ 1,300,000.00" })
+    $actual[1] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "2"; Name = "Steve Jobs"; Position = "Founder Apple"; Salary = "$ 1,200,000.00" })
+    $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = "Founder Google"; Salary = "" })
+    $actual[4] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "5"; Name = "Mark Zuckerberg"; Position = ""; Salary = "$ 1,300,000.00" })
   }
 
   It "Can parse output with lots of missing data" {
@@ -339,26 +351,16 @@ Describe "Convert-FromStringTable" {
 
     $actual.Count | Should -Be 4
 
-    $actual[0] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = ""; Salary = "" })
-    $actual[3] | Should -BeEquivalentTo -Expected ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = ""; Salary = "" })
-  }
-}
-
-Function BeEquivalentTo {
-  param (
-    [PSCustomObject] $ActualValue,
-    [PsCustomObject] $Expected,
-    [Switch] $Negate
-  )
-
-  $result = [PsCustomObject]@{ 
-    Succeeded = (-not $Negate) -eq ($ActualValue, $Expected | Test-Equality); 
-    FailureMessage = $Negate `
-      ? "Expected object not to be equivalent to:`n$(($Expected | ConvertTo-Json))" `
-      : "Expected:`n$(($Expected | ConvertTo-Json))`nBut found: `n$(($ActualValue | ConvertTo-Json))" 
+    $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = ""; Salary = "" })
+    $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Larry Page"; Position = ""; Salary = "" })
   }
 
-  $result
-}
+  It "Can parse output without headers" {
 
-Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo
+    $cmdOutput = 1..5 | ForEach-Object { ($("a".."f" -join ""), $("A".."F" -join ""), $(0..5 -join "")) -join "  " }  
+
+    $actual = $cmdOutput | ConvertFrom-StringTable -NoHeader
+
+    $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ Property01 = "abcdef"; Property02 = "ABCDEF"; Property03 = "012345"; })
+  }
+}
