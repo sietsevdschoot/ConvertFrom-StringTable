@@ -25,7 +25,7 @@ Check out the [Pester testcases](https://github.com/sietsevdschoot/ConvertFrom-S
 
 You can install `ConvertFrom-StringTable` directly from the PowerShell Gallery using the following command:
 ```powershell
-Install-module ConvertFrom-StringTable -Repository PSGallery
+Install-Module ConvertFrom-StringTable -Repository PSGallery
 ```
 
 Then import the module before use:
