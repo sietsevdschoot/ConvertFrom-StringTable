@@ -4,10 +4,10 @@ Describe "Convert-FromStringTable" {
 
   BeforeAll {
 
-    Import-Module $PSScriptRoot\PesterExtensions.psm1 -Force
+    Import-Module $PSScriptRoot\Extensions\PesterExtensions.psm1 -Force
     Import-Module $PSScriptRoot\..\src\ConvertFrom-StringTable.psm1 -Force
 
-    Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo
+    Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo -SupportsArrayInput
     Add-ShouldOperator -Name ContainEquivalentOf -Test $function:ContainEquivalentOf -SupportsArrayInput
   }
     
@@ -24,7 +24,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("ContainerId", "Image", "Command", "Created", "Status", "Ports", "Names" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("ContainerId", "Image", "Command", "Created", "Status", "Ports", "Names") 
 
     $actual.Count | Should -Be 2
   } 
@@ -45,7 +45,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("Proto", "LocalAddress", "ForeignAddress", "State" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("Proto", "LocalAddress", "ForeignAddress", "State") 
 
     $actual.Count | Should -Be 3
   }
@@ -55,7 +55,7 @@ Describe "Convert-FromStringTable" {
     $actual = netstat -aon | Select-Object -First 20 | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("Proto", "LocalAddress", "ForeignAddress", "State", "PID" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("Proto", "LocalAddress", "ForeignAddress", "State", "PID") 
 
     $actual.Count | Should -Be 16
   }
@@ -72,12 +72,10 @@ Describe "Convert-FromStringTable" {
     # $actual = psql -c "SELECT * FROM users" | ConvertFrom-StringTable
     $actual = $cmdOutput | ConvertFrom-StringTable
 
-    $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("id", "name", "email" | Sort-Object) 
-
-    $actual | Select-Object -exp Name | Should -Be @("John", "Jane")
-
-    $actual.Count | Should -Be 2
+    $actual | Should -BeEquivalentTo @(
+      ([PsCustomObject]@{ id = "1"; name = "John"; email = "john@example.com"; })
+      ([PsCustomObject]@{ id = "2"; name = "Jane"; email = "jane@example.com"; })
+    )
   } 
 
   It "Can parse WinGet output" {
@@ -97,7 +95,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("Name", "Id", "Version", "Match", "Source" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("Name", "Id", "Version", "Match", "Source") 
 
     $actual | Should -ContainEquivalentOf ([PsCustomObject]@{ 
       Name = "Microsoft ASP.NET Core Hosting Bundle 8.0 Preview"; 
@@ -125,7 +123,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("id", "name", "email" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("id", "name", "email") 
 
     $actual | Select-Object -exp Name | Should -Be @("John", "Jane")
 
@@ -145,7 +143,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("id", "name", "email" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("id", "name", "email") 
 
     $actual.Count | Should -Be 2
   } 
@@ -162,7 +160,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("InstanceId", "InstanceType", "State", "PublicIp", "PrivateIp", "LaunchTime" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("InstanceId", "InstanceType", "State", "PublicIp", "PrivateIp", "LaunchTime") 
 
     $actual.Count | Should -Be 2
   }
@@ -182,10 +180,10 @@ Describe "Convert-FromStringTable" {
       ╚════╩═════════════════╩═══════════════════╩════════════════╝
     '
 
-    $actual = $cmdOutput | ConvertFrom-StringTable -TableSeparators "╠╬╣═╚╩╝╔╦╗ " -ColumnSeparators "║"
+    $actual = $cmdOutput | ConvertFrom-StringTable -TableSeparators "╔╦╗╠╬╣╚╩╝═ " -ColumnSeparators "║"
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("No", "Name", "Position", "Salary") 
 
     $actual.Count | Should -Be 4
   }
@@ -204,10 +202,10 @@ Describe "Convert-FromStringTable" {
       └────┴─────────────────┴───────────────────┴────────────────┘
     '
 
-    $actual = $cmdOutput | ConvertFrom-StringTable -TableSeparators "├┼┤─└┴┘┌┬┐ " -ColumnSeparators "│"
+    $actual = $cmdOutput | ConvertFrom-StringTable -TableSeparators "┌┬┐├┼┤└┴┘─ " -ColumnSeparators "│"
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("No", "Name", "Position", "Salary") 
 
     $actual.Count | Should -Be 4
   }
@@ -227,7 +225,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable -TableSeparators "═║═ " -ColumnSeparators "║"
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("No", "Name", "Position", "Salary") 
 
     $actual.Count | Should -Be 4
   }
@@ -249,7 +247,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable -TableSeparators ".: " -ColumnSeparators ":"
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("No", "Name", "Position", "Salary") 
 
     $actual.Count | Should -Be 4
   }
@@ -259,20 +257,20 @@ Describe "Convert-FromStringTable" {
        
     $cmdOutput = '
       No Name            Position                  Salary
-      1  Bill Gates      Founder Microsoft    $ 10,000.00
-      2  Steve Jobs      Founder Apple     $ 1,200,000.00
+      1  Bill Gates      Founder Microsoft $ 1,200,000.00
+      2  Steve Jobs      Founder Apple        $ 10,000.00
       3  Larry Page      Founder Google    $ 1,100,000.00
-      4  Mark Zuckerberg Founder Facebookk $ 1,300,000.00
+      4  Mark Zuckerberg Founder Facebook  $ 1,300,000.00
     '
 
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("No", "Name", "Position", "Salary") 
 
     $actual.Count | Should -Be 4
 
-    $actual[3] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "4"; Name = "Mark Zuckerberg"; Position = "Founder Facebookk"; Salary = "$ 1,300,000.00" })
+    $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ No = "1"; Name = "Bill Gates"; Position = "Founder Microsoft"; Salary = "$ 1,200,000.00" })
   }
 
   It "Can convert docker container output with powershell error" {
@@ -289,7 +287,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("ContainerId", "Image", "Command", "Created", "Status", "Ports", "Names" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("ContainerId", "Image", "Command", "Created", "Status", "Ports", "Names") 
 
     $actual.Count | Should -Be 2
   }
@@ -307,7 +305,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("Product", "Quantity", "Price" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("Product", "Quantity", "Price") 
 
     $actual.Count | Should -Be 2
   }
@@ -326,7 +324,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("No", "Name", "Position", "Salary") 
 
     $actual.Count | Should -Be 5
 
@@ -347,7 +345,7 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable
 
     $properties = $actual | Get-Member -MemberType NoteProperty | Select-Object -exp Name
-    $properties | Sort-Object | Should -Be ("No", "Name", "Position", "Salary" | Sort-Object) 
+    $properties | Should -BeEquivalentTo @("No", "Name", "Position", "Salary") 
 
     $actual.Count | Should -Be 4
 
@@ -357,7 +355,7 @@ Describe "Convert-FromStringTable" {
 
   It "Can parse output without headers" {
 
-    $cmdOutput = 1..5 | ForEach-Object { ($("a".."f" -join ""), $("A".."F" -join ""), $(0..5 -join "")) -join "  " }  
+    $cmdOutput = 1..5 | ForEach-Object { (("a".."f" -join ""), ("A".."F" -join ""), (0..5 -join "")) -join "  " }  
 
     $actual = $cmdOutput | ConvertFrom-StringTable -NoHeader
 
