@@ -64,12 +64,12 @@ Function Test-IsEquavalentTo {
   # before comparing. Order is irrelevant in our tests.
   if ($Objects | ForEach-Object { $item = $_; Test-IsArrayOfValueTypes $item } | Test-All) {
 
-    $Objects | ForEach-Object { ,($_ | Sort-Object) }  | Test-Equality
+    $Objects | ForEach-Object { ,($_ | Sort-Object) } | Test-Equality
   }
   else {
 
-    # One of the arguments is an array, the other is not. Some the times it is comparing an object 
-    # with an array containing a single item. Flatten the arrays before use.
+    # One of the arguments is an array and the other is not. In some cases the comparison is between an object 
+    # and an array containing a single item. Flatten the arrays before use to have a successfull comparison.
     if ($Objects | ForEach-Object { $_ -is [array] } | Reduce-Object { param($a, $b) $a -xor $b }) {
 
       $Objects | ForEach-Object { $_ } | Test-Equality
