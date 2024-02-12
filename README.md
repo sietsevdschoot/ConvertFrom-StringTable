@@ -2,14 +2,12 @@
 
 A PowerShell cmdlet designed to effortlessly convert text tables into objects.
 
-`ConvertFrom-StringTable` simplifies the process of extracting structured data from command line outputs, enabling seamless integration with PowerShell scripts and automation pipelines.
-
 ## Features:
 
-- Converts text based tables into powershell objects
-- Columns can be left- right or centered aligned
-- Can parse any table layout using the `-TableSeparators` and `-ColumnSeparators` parameters
-- Headers can be optionally omitted.
+- Converts text based tables into powershell objects.
+- Columns can be left- right or centered aligned.
+- Can parse any table layout using the `-TableSeparators` and `-ColumnSeparators` parameters.
+- Headers can be optionally omitted..
 
 This module supports parsing table output from major applications, such as : 
 - Docker
@@ -21,11 +19,13 @@ This module supports parsing table output from major applications, such as :
 - AWS CLI
 - Plus many more...
 
+Check out the [Pester testcases](https://github.com/sietsevdschoot/ConvertFrom-StringTable/blob/main/tests/ConvertFrom-StringTable.tests.ps1) for examples of how these text tables can be parsed.
+
 ## Installation
 
 You can install `ConvertFrom-StringTable` directly from the PowerShell Gallery using the following command:
 ```powershell
-Install-Module -Name ConvertFrom-StringTable
+Install-module ConvertFrom-StringTable -Repository PSGallery
 ```
 
 Then import the module before use:

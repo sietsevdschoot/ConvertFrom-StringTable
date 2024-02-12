@@ -7,7 +7,7 @@ Describe "Convert-FromStringTable" {
     Import-Module $PSScriptRoot\PesterExtensions.psm1 -Force
     Import-Module $PSScriptRoot\..\src\ConvertFrom-StringTable.psm1 -Force
 
-    Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo
+    Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo -SupportsArrayInput
     Add-ShouldOperator -Name ContainEquivalentOf -Test $function:ContainEquivalentOf -SupportsArrayInput
   }
     
@@ -362,5 +362,10 @@ Describe "Convert-FromStringTable" {
     $actual = $cmdOutput | ConvertFrom-StringTable -NoHeader
 
     $actual[0] | Should -BeEquivalentTo ([PsCustomObject]@{ Property01 = "abcdef"; Property02 = "ABCDEF"; Property03 = "012345"; })
+  }
+
+  It "MyTest ff" {
+
+    @(1,2,3) | Should -BeEquivalentTo @(1, 2, 3)
   }
 }

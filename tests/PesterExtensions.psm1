@@ -9,7 +9,7 @@ Function BeEquivalentTo {
       [Switch] $Negate
     )
   
-    $success = (-not $Negate) -eq ($ActualValue, $Expected | Test-Equality)
+    $success = (-not $Negate) -eq (Test-IsEquavalentTo @($ActualValue, $Expected))
   
     if (!$success) {
   
@@ -34,7 +34,7 @@ Function BeEquivalentTo {
     
     foreach ($item in $ActualValue) {
       
-      if (($item, $Expected | Test-Equality)) {
+      if ((Test-IsEquavalentTo @($item, $Expected))) {
   
         $isMatch = $true
         break;
@@ -52,6 +52,33 @@ Function BeEquivalentTo {
   
     [PsCustomObject]@{ Succeeded = $success; FailureMessage = $failureMessage }
   }
+
+
+Function Test-IsEquavalentTo {
+  param(
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [object[]] $Object
+  )
+
+  if ((Test-IsArrayOfValueTypes $Object | Test-All)) {
+
+    $Object | ForEach-Object { (@($_) | Sort-Object) } | Test-Equality
+
+  }
+  else {
+    $Object | Test-Equality
+  }
+} 
+
+Function Test-IsArrayOfValueTypes {
+  param(
+    [object] $Object 
+  )
+
+  $object -is [array] -and (@($object) | ForEach-Object { $_.GetType().IsValueType } | Test-All )
+}
+
 
 Export-ModuleMember -Function BeEquivalentTo
 Export-ModuleMember -Function ContainEquivalentOf
