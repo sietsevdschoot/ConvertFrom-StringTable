@@ -4,7 +4,7 @@ Describe "Convert-FromStringTable" {
 
   BeforeAll {
 
-    Import-Module $PSScriptRoot\PesterExtensions.psm1 -Force
+    Import-Module $PSScriptRoot\Extensions\PesterExtensions.psm1 -Force
     Import-Module $PSScriptRoot\..\src\ConvertFrom-StringTable.psm1 -Force
 
     Add-ShouldOperator -Name BeEquivalentTo -Test $function:BeEquivalentTo -SupportsArrayInput
